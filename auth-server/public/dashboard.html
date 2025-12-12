@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard - JKKN</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+      background: #f3f4f6;
+      min-height: 100vh;
+    }
+
+    .header {
+      background: white;
+      border-bottom: 1px solid #e5e7eb;
+      padding: 16px 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .header-left {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .logo {
+      width: 40px;
+      height: 40px;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 16px;
+      color: white;
+      font-weight: bold;
+    }
+
+    .brand {
+      font-size: 20px;
+      font-weight: 700;
+      color: #1a1a2e;
+    }
+
+    .header-right {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .user-info {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .avatar {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 2px solid #e5e7eb;
+    }
+
+    .avatar-placeholder {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-weight: 600;
+      font-size: 16px;
+    }
+
+    .user-details {
+      text-align: right;
+    }
+
+    .user-name {
+      font-weight: 600;
+      color: #1a1a2e;
+      font-size: 14px;
+    }
+
+    .user-email {
+      font-size: 12px;
+      color: #6b7280;
+    }
+
+    .logout-btn {
+      background: #ef4444;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 8px;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+
+    .logout-btn:hover {
+      background: #dc2626;
+    }
+
+    .main {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 32px 24px;
+    }
+
+    .welcome-card {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      border-radius: 16px;
+      padding: 32px;
+      color: white;
+      margin-bottom: 24px;
+    }
+
+    .welcome-title {
+      font-size: 28px;
+      font-weight: 700;
+      margin-bottom: 8px;
+    }
+
+    .welcome-subtitle {
+      opacity: 0.9;
+      font-size: 16px;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 24px;
+    }
+
+    .card {
+      background: white;
+      border-radius: 12px;
+      padding: 24px;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    }
+
+    .card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 16px;
+    }
+
+    .card-title {
+      font-size: 16px;
+      font-weight: 600;
+      color: #1a1a2e;
+    }
+
+    .card-icon {
+      width: 40px;
+      height: 40px;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 20px;
+    }
+
+    .card-icon.blue {
+      background: #dbeafe;
+    }
+
+    .card-icon.green {
+      background: #d1fae5;
+    }
+
+    .card-icon.purple {
+      background: #e9d5ff;
+    }
+
+    .card-content {
+      color: #6b7280;
+      font-size: 14px;
+      line-height: 1.6;
+    }
+
+    .session-info {
+      background: #f9fafb;
+      border-radius: 8px;
+      padding: 16px;
+      margin-top: 12px;
+    }
+
+    .session-row {
+      display: flex;
+      justify-content: space-between;
+      font-size: 13px;
+      padding: 4px 0;
+    }
+
+    .session-label {
+      color: #6b7280;
+    }
+
+    .session-value {
+      color: #1a1a2e;
+      font-weight: 500;
+    }
+
+    .loading {
+      text-align: center;
+      padding: 40px;
+      color: #6b7280;
+    }
+
+    .error-message {
+      background: #fef2f2;
+      border: 1px solid #fecaca;
+      color: #991b1b;
+      padding: 12px 16px;
+      border-radius: 8px;
+      margin-bottom: 16px;
+    }
+  </style>
+</head>
+<body>
+  <header class="header">
+    <div class="header-left">
+      <div class="logo">JK</div>
+      <span class="brand">JKKN Portal</span>
+    </div>
+    <div class="header-right">
+      <div class="user-info">
+        <div class="user-details">
+          <div class="user-name" id="userName">Loading...</div>
+          <div class="user-email" id="userEmail"></div>
+        </div>
+        <div class="avatar-placeholder" id="avatarPlaceholder">?</div>
+        <img class="avatar" id="userAvatar" style="display: none;" alt="User avatar">
+      </div>
+      <form action="/logout" method="POST" style="margin: 0;">
+        <button type="submit" class="logout-btn">Sign Out</button>
+      </form>
+    </div>
+  </header>
+
+  <main class="main">
+    <div class="welcome-card">
+      <h1 class="welcome-title" id="welcomeTitle">Welcome back!</h1>
+      <p class="welcome-subtitle">You've successfully signed in with your JKKN account.</p>
+    </div>
+
+    <div class="grid">
+      <div class="card">
+        <div class="card-header">
+          <h2 class="card-title">Account Information</h2>
+          <div class="card-icon blue">👤</div>
+        </div>
+        <div class="card-content">
+          <p>Your account details and session information.</p>
+          <div class="session-info">
+            <div class="session-row">
+              <span class="session-label">Email</span>
+              <span class="session-value" id="infoEmail">-</span>
+            </div>
+            <div class="session-row">
+              <span class="session-label">Name</span>
+              <span class="session-value" id="infoName">-</span>
+            </div>
+            <div class="session-row">
+              <span class="session-label">User ID</span>
+              <span class="session-value" id="infoId">-</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-header">
+          <h2 class="card-title">Session Security</h2>
+          <div class="card-icon green">🔒</div>
+        </div>
+        <div class="card-content">
+          <p>Your session is secured with the following measures:</p>
+          <div class="session-info">
+            <div class="session-row">
+              <span class="session-label">Cookie</span>
+              <span class="session-value">HttpOnly, SameSite=Lax</span>
+            </div>
+            <div class="session-row">
+              <span class="session-label">Duration</span>
+              <span class="session-value">30 days</span>
+            </div>
+            <div class="session-row">
+              <span class="session-label">Domain</span>
+              <span class="session-value">@jkkn.ac.in only</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-header">
+          <h2 class="card-title">Quick Actions</h2>
+          <div class="card-icon purple">⚡</div>
+        </div>
+        <div class="card-content">
+          <p>This is a demo dashboard. In a production application, you would see your actual features and actions here.</p>
+          <div class="session-info">
+            <div class="session-row">
+              <span class="session-label">Status</span>
+              <span class="session-value" style="color: #059669;">● Authenticated</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <script>
+    // Fetch user data from API
+    async function loadUserData() {
+      try {
+        const response = await fetch('/api/me');
+
+        if (!response.ok) {
+          if (response.status === 401 || response.status === 403) {
+            // Session expired, redirect to login
+            window.location.href = '/';
+            return;
+          }
+          throw new Error('Failed to load user data');
+        }
+
+        const user = await response.json();
+
+        // Update header
+        document.getElementById('userName').textContent = user.fullName || 'User';
+        document.getElementById('userEmail').textContent = user.email;
+
+        // Update avatar
+        if (user.avatarUrl) {
+          const avatar = document.getElementById('userAvatar');
+          avatar.src = user.avatarUrl;
+          avatar.style.display = 'block';
+          document.getElementById('avatarPlaceholder').style.display = 'none';
+        } else {
+          const initial = (user.fullName || user.email || '?').charAt(0).toUpperCase();
+          document.getElementById('avatarPlaceholder').textContent = initial;
+        }
+
+        // Update welcome message
+        const firstName = (user.fullName || '').split(' ')[0] || 'there';
+        document.getElementById('welcomeTitle').textContent = `Welcome back, ${firstName}!`;
+
+        // Update account info card
+        document.getElementById('infoEmail').textContent = user.email;
+        document.getElementById('infoName').textContent = user.fullName || '-';
+        document.getElementById('infoId').textContent = user.id.substring(0, 8) + '...';
+
+      } catch (error) {
+        console.error('Error loading user data:', error);
+        document.getElementById('userName').textContent = 'Error loading user';
+      }
+    }
+
+    // Load user data on page load
+    loadUserData();
+  </script>
+</body>
+</html>

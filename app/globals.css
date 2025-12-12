@@ -1,0 +1,137 @@
+@import "tailwindcss";
+
+:root {
+  /* Modern Academic Color Palette - White Background */
+  --primary: #A01D3A;
+  --primary-dark: #7D1530;
+  --primary-light: #C73A5A;
+  --primary-lighter: #FFE4E9;
+
+  --secondary: #0F766E;
+  --secondary-dark: #0D5F59;
+  --secondary-light: #14B8A6;
+  --secondary-lighter: #CCFBF1;
+
+  --accent: #F59E0B;
+  --accent-dark: #D97706;
+  --accent-light: #FCD34D;
+  --accent-lighter: #FEF3C7;
+
+  --neutral-50: #FAFAFA;
+  --neutral-100: #F4F4F5;
+  --neutral-200: #E4E4E7;
+  --neutral-300: #D4D4D8;
+  --neutral-400: #A1A1AA;
+  --neutral-500: #71717A;
+  --neutral-600: #52525B;
+  --neutral-700: #3F3F46;
+  --neutral-800: #27272A;
+  --neutral-900: #18181B;
+
+  --background: #FFFFFF;
+  --surface: #FAFAFA;
+  --surface-hover: #F4F4F5;
+  --foreground: var(--neutral-800);
+  --border: var(--neutral-200);
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-primary: var(--primary);
+  --color-secondary: var(--secondary);
+  --color-accent: var(--accent);
+  --color-surface: var(--surface);
+  --color-border: var(--border);
+  --font-display: var(--font-crimson);
+  --font-body: var(--font-instrument);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --background: #0A0A0B;
+    --foreground: #F4F4F5;
+    --surface: #18181B;
+    --surface-hover: #27272A;
+    --border: #3F3F46;
+  }
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-instrument), sans-serif;
+  position: relative;
+  line-height: 1.4;
+}
+
+/* Subtle texture overlay - very light for white background */
+body::before {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0.015;
+  pointer-events: none;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 400 400' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+  z-index: -1;
+}
+
+/* Typography Utilities */
+.font-display {
+  font-family: var(--font-crimson), serif;
+  line-height: 1.2;
+}
+
+.font-body {
+  font-family: var(--font-instrument), sans-serif;
+  line-height: 1.4;
+}
+
+/* Elegant animations */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slideInRight {
+  from {
+    opacity: 0;
+    transform: translateX(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes scaleIn {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.animate-fade-in-up {
+  animation: fadeInUp 0.6s ease-out forwards;
+}
+
+.animate-slide-in-right {
+  animation: slideInRight 0.5s ease-out forwards;
+}
+
+.animate-scale-in {
+  animation: scaleIn 0.5s ease-out forwards;
+}
