@@ -7,15 +7,24 @@
 import { OAuth2Client } from 'google-auth-library';
 import { supabaseAdmin } from './supabase';
 
-// Google OAuth2 client
-const oauth2Client = new OAuth2Client(
-  process.env.GOOGLE_CLIENT_ID,
-  process.env.GOOGLE_CLIENT_SECRET,
-  process.env.GOOGLE_REDIRECT_URI
-);
+// Lazy-initialized Google OAuth2 client
+let _oauth2Client: OAuth2Client | null = null;
 
-// Allowed domain for sign-in
-const ALLOWED_DOMAIN = process.env.ALLOWED_DOMAIN || 'jkkn.ac.in';
+function getOAuth2Client(): OAuth2Client {
+  if (!_oauth2Client) {
+    _oauth2Client = new OAuth2Client(
+      process.env.GOOGLE_CLIENT_ID,
+      process.env.GOOGLE_CLIENT_SECRET,
+      process.env.GOOGLE_REDIRECT_URI
+    );
+  }
+  return _oauth2Client;
+}
+
+// Allowed domain for sign-in (lazy evaluated)
+function getAllowedDomain(): string {
+  return process.env.ALLOWED_DOMAIN || 'jkkn.ac.in';
+}
 
 /**
  * Google user profile from OAuth
@@ -44,7 +53,7 @@ export interface User {
  * Generate Google OAuth authorization URL
  */
 export function getGoogleAuthUrl(state: string): string {
-  return oauth2Client.generateAuthUrl({
+  return getOAuth2Client().generateAuthUrl({
     access_type: 'offline',
     scope: [
       'https://www.googleapis.com/auth/userinfo.email',
@@ -52,7 +61,7 @@ export function getGoogleAuthUrl(state: string): string {
     ],
     state,
     prompt: 'select_account',
-    hd: ALLOWED_DOMAIN,
+    hd: getAllowedDomain(),
   });
 }
 
@@ -60,14 +69,15 @@ export function getGoogleAuthUrl(state: string): string {
  * Exchange authorization code for tokens and get user profile
  */
 export async function getGoogleUserFromCode(code: string): Promise<GoogleProfile> {
-  const { tokens } = await oauth2Client.getToken(code);
-  oauth2Client.setCredentials(tokens);
+  const client = getOAuth2Client();
+  const { tokens } = await client.getToken(code);
+  client.setCredentials(tokens);
 
   if (!tokens.id_token) {
     throw new Error('No ID token received from Google');
   }
 
-  const ticket = await oauth2Client.verifyIdToken({
+  const ticket = await client.verifyIdToken({
     idToken: tokens.id_token,
     audience: process.env.GOOGLE_CLIENT_ID,
   });
@@ -90,10 +100,11 @@ export async function getGoogleUserFromCode(code: string): Promise<GoogleProfile
  * Check if email domain is allowed
  */
 export function isAllowedDomain(email: string, hd?: string): boolean {
-  if (hd === ALLOWED_DOMAIN) {
+  const allowedDomain = getAllowedDomain();
+  if (hd === allowedDomain) {
     return true;
   }
-  if (email && email.toLowerCase().endsWith(`@${ALLOWED_DOMAIN}`)) {
+  if (email && email.toLowerCase().endsWith(`@${allowedDomain}`)) {
     return true;
   }
   return false;
