@@ -31,8 +31,9 @@ export async function GET() {
     return NextResponse.redirect(authUrl);
   } catch (error) {
     console.error('Error starting OAuth flow:', error);
+    const errorMessage = error instanceof Error ? error.message : 'oauth_start_failed';
     return NextResponse.redirect(
-      new URL('/login?error=oauth_start_failed', process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000')
+      new URL(`/login?error=${encodeURIComponent(errorMessage)}`, process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000')
     );
   }
 }
