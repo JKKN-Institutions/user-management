@@ -4,14 +4,13 @@ A secure, enterprise-grade authentication system built with Next.js, featuring d
 
 ## Overview
 
-This application provides a robust user management solution with Google OAuth and email verification code authentication, specifically designed for `@jkkn.ac.in` domain users. Built with modern security practices and optimized for institutional use.
+This application provides a robust user management solution with Google OAuth and email verification code authentication, specifically designed for your domain users. Built with modern security practices and optimized for best use.
 
 ## Key Features
 
 ### Authentication
 - **Google OAuth 2.0** - Seamless single sign-on with Google Workspace
 - **Email Verification** - Passwordless login via 6-digit verification codes
-- **Domain Restriction** - Access limited to `@jkkn.ac.in` accounts
 
 ### Security
 - 256-bit cryptographically secure session tokens
@@ -61,8 +60,8 @@ npm install
 4. Create **OAuth 2.0 Client ID** (Web application)
 5. Add authorized redirect URIs:
    ```
-   http://localhost:3000/api/auth/google/callback
-   http://localhost:3000/api/auth/gmail-callback
+   https://your-domain/api/auth/google/callback
+   https://your-domain/api/auth/gmail-callback
    ```
 6. Enable **Gmail API** under **APIs & Services > Library**
 
@@ -85,7 +84,7 @@ SUPABASE_SERVICE_ROLE_KEY=your-service-role-key
 ```env
 GOOGLE_CLIENT_ID=your-client-id.apps.googleusercontent.com
 GOOGLE_CLIENT_SECRET=your-client-secret
-GOOGLE_REDIRECT_URI=http://localhost:3000/api/auth/google/callback
+GOOGLE_REDIRECT_URI=https://your-domain/api/auth/google/callback
 ```
 
 #### Gmail API
@@ -93,52 +92,15 @@ GOOGLE_REDIRECT_URI=http://localhost:3000/api/auth/google/callback
 GMAIL_CLIENT_ID=your-client-id.apps.googleusercontent.com
 GMAIL_CLIENT_SECRET=your-client-secret
 GMAIL_REFRESH_TOKEN=your-refresh-token
-GMAIL_USER=sender@jkkn.ac.in
-EMAIL_FROM_NAME=JKKN
+GMAIL_USER=sender@domain.com
+EMAIL_FROM_NAME=YourAppName
 ```
 
 #### Application
 ```env
-NEXT_PUBLIC_APP_URL=http://localhost:3000
-ALLOWED_DOMAIN=jkkn.ac.in
+NEXT_PUBLIC_APP_URL=https://your-domain
+ALLOWED_DOMAIN=yourdomain.com
 ```
-
-### 4. Database Setup
-
-Execute in Supabase SQL Editor:
-
-```sql
--- Verification codes table
-CREATE TABLE public.verification_codes (
-  id BIGSERIAL PRIMARY KEY,
-  email VARCHAR(255) NOT NULL,
-  code VARCHAR(6) NOT NULL,
-  expires_at TIMESTAMPTZ NOT NULL,
-  used_at TIMESTAMPTZ,
-  created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
-  updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
-);
-
--- Indexes for performance
-CREATE INDEX idx_verification_codes_email ON public.verification_codes(email);
-CREATE INDEX idx_verification_codes_code ON public.verification_codes(code);
-CREATE INDEX idx_verification_codes_expires_at ON public.verification_codes(expires_at);
-```
-
-### 5. Gmail Token Generation
-
-1. Start the development server: `npm run dev`
-2. Visit `http://localhost:3000/api/auth/gmail-callback`
-3. Authenticate with the sender Gmail account
-4. Copy the refresh token to `.env.local`
-
-### 6. Launch
-
-```bash
-npm run dev
-```
-
-Access the application at [http://localhost:3000](http://localhost:3000)
 
 ## Project Architecture
 
@@ -199,27 +161,6 @@ User → Enter Email → Receive Code → Enter Code → Session Creation → Da
 | Domain Control | Dual validation via `hd` claim and email suffix |
 | Rate Limiting | 3 codes per email per 10 minutes |
 | Code Expiry | 2-minute TTL on verification codes |
-
-## Troubleshooting
-
-### `redirect_uri_mismatch`
-Verify redirect URIs in Google Cloud Console match exactly:
-- `http://localhost:3000/api/auth/google/callback`
-- `http://localhost:3000/api/auth/gmail-callback`
-
-### `invalid_grant` Error
-1. Visit [Google Account Permissions](https://myaccount.google.com/permissions)
-2. Revoke access for the application
-3. Regenerate token via `/api/auth/gmail-callback`
-
-### Email Delivery Failure
-- Confirm Gmail API is enabled in Google Cloud Console
-- Verify `GMAIL_REFRESH_TOKEN` is current
-- Check sender account permissions
-
-### Domain Restriction Issues
-- Ensure `ALLOWED_DOMAIN=jkkn.ac.in` is set
-- Verify user email ends with `@jkkn.ac.in`
 
 ## Production Deployment
 
