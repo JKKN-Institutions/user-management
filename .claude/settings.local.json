@@ -57,7 +57,8 @@
       "Bash(py:*)",
       "Bash(npm info:*)",
       "Bash(npm uninstall:*)",
-      "Bash(git reset:*)"
+      "Bash(git reset:*)",
+      "Bash(git commit:*)"
     ],
     "deny": [],
     "ask": []
