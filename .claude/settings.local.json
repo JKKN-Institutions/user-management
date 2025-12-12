@@ -55,7 +55,9 @@
       "Bash(rm:*)",
       "Bash(powershell -ExecutionPolicy Bypass -File update-hooks-imports.ps1)",
       "Bash(py:*)",
-      "Bash(npm info:*)"
+      "Bash(npm info:*)",
+      "Bash(npm uninstall:*)",
+      "Bash(git reset:*)"
     ],
     "deny": [],
     "ask": []
